@@ -270,7 +270,24 @@ const LEVELS = [
    advice:'缘分薄是真的，但薄不是断——那半步能不能自己迈，就看你们了。'},
 ];
 
+/* ---------- 专属定制：命中指定的一对名字，走独立分支 ---------- */
+const SPECIAL_PAIR = {
+  a:'杜伯涵', b:'高崇',
+  level:{min:90, name:'命中注定', tag:'天生一对',
+    line:'别人的缘分是算出来的，你们的是命里带来的。',
+    quip:'算法到你们这儿就失灵了。',
+    advice:'唯一的提醒：命好也得有人惜福。'},
+};
+const stripSpace = s => (s||'').replace(/[\s\u3000]+/g,'');
+
 function analyze(maleRaw, femaleRaw){
+  // 专属对：不论输入顺序，恒定 99 分 + 定制档位与评语
+  const _m = stripSpace(maleRaw), _f = stripSpace(femaleRaw);
+  if ((_m === SPECIAL_PAIR.a && _f === SPECIAL_PAIR.b) || (_m === SPECIAL_PAIR.b && _f === SPECIAL_PAIR.a)) {
+    return { score:99, level:SPECIAL_PAIR.level, reasons:[], compare:[], pct:1,
+             common:[], sumM:0, sumF:0, luckSum:0, male:[], female:[], special:true };
+  }
+
   const male = parseName(maleRaw), female = parseName(femaleRaw);
   if (!male.length || !female.length) return null;
 
